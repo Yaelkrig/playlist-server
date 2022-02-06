@@ -10,17 +10,19 @@ const songSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    src: {
+    url: {
         type: String,
         required: true,
     },
-    user: {
-        type: String,
-        required: true
+    imgUrl: {
+        type: String
     },
     createdBy: {
         type: mongoose.SchemaTypes.ObjectId,
-        ref: 'User'
+        ref: 'User',
+    },
+    playlist: {
+        type: String
     },
     provider: {
         type: String
