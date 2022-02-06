@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 const Song = require('./Song')
 const User = require('./User')
+const Playlist = require('./Playlist')
 const connectDB = async () => {
     const mongoUrl = process.env.MONGO_URL;
     return await mongoose.connect(mongoUrl, {

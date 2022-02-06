@@ -22,7 +22,8 @@ const songSchema = new mongoose.Schema({
         ref: 'User',
     },
     playlist: {
-        type: String
+        type: mongoose.SchemaTypes.ObjectId,
+        ref: 'Playlist',
     },
     provider: {
         type: String
