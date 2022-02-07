@@ -9,9 +9,10 @@ const playlistSchema = new mongoose.Schema({
         type: mongoose.SchemaTypes.ObjectId,
         ref: 'User',
     },
-    songs: {
-        type: Array
-    }
+    songs: [{
+        type: mongoose.SchemaTypes.ObjectId,
+        ref: 'Song',
+    }]
 });
-const Song = mongoose.model('Playlist', playlistSchema)
-module.exports = Song;
+const Playlist = mongoose.model('Playlist', playlistSchema)
+module.exports = Playlist;

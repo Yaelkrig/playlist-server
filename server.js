@@ -4,15 +4,17 @@ const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
 const { connectDB } = require('./models');
-const { songsRoute, usersRoute } = require('./routes/router');
+const { songsRoute, usersRoute, playlistRoute } = require('./routes/router');
 
 // Uses
 const app = express();
 app.use(cors());
 app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: false }))
-app.use("/songs", songsRoute)
-app.use("/users", usersRoute)
+app.use("/songs", songsRoute);
+app.use("/users", usersRoute);
+app.use("/playlists", playlistRoute)
+
 
 // import port from .env
 const port = process.env.PORT || 5000;

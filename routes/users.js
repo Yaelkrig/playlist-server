@@ -8,27 +8,20 @@ const User = require('../models/User');
 router.post("/register", async (req, res) => {
     console.log(req.body);
     try {
+        const checkIfExist = User.findOne({ username: req.body.username })
+        if (checkIfExist) return res.status(500).json({ message: "user name already taken" })
         // שמירת הסיסמה מוצפנת
-        const hashedPassword = await bcrypt.hash(req.body.password, 10)
+        const hashedPassword = await bcrypt.hash(req.body.password, 10);
         console.log(hashedPassword);
         const user = new User({
             username: req.body.username,
             password: hashedPassword,
             email: req.body.email
         })
-        console.log('new user saved');
-        const savesUser = await user.save()
-        res.json(savesUser)
-    } catch (e) {
-        console.log(e);
-        res.status(500).json({ message: "internal server error" })
-    }
-})
-router.post("/available", async (req, res) => {
-    try {
-        const existence = await User.findOne({ username: req.body.username });
-        if (existence) return res.status(400).json({ message: "already exist" })
-        res.json({ message: "available" })
+        const savesUser = await user.save();
+        savesUser.password = undefined;
+        const accessTokenReg = jwt.sign(JSON.stringify(savesUser), process.env.TOKEN_SECRET)
+        res.status(201).json({ accessToken: accessTokenReg })
     } catch (e) {
         console.log(e);
         res.status(500).json({ message: "internal server error" })
@@ -43,7 +36,7 @@ router.post("/login", async (req, res) => {
         if (match) {
             user.password = undefined;
             const accessToken = jwt.sign(JSON.stringify(user), process.env.TOKEN_SECRET);
-            res.json(accessToken);
+            res.status(200).json(accessToken);
         } else {
             res.status(400).json({ message: "invalid credential" });
         }
@@ -62,9 +55,10 @@ router.post("/", async (req, res) => {
     const userId = decoded._id
     console.log(decoded)
     console.log(userId)
-    let user = await User.find({ _id: userId });
+    const user = await User.findOne({ _id: userId });
+    user.password = undefined;
     console.log(user);
-    res.json(user[0])
+    res.json(user)
 })
 
 router.get("/", async (req, res) => {

@@ -10,5 +10,5 @@ const connectDB = async () => {
     }
     )
 }
-const models = { Song, User }
+const models = { Song, User, Playlist }
 module.exports = { connectDB, models }
