@@ -37,10 +37,22 @@ router.post("/newPlaylist", authJWT, async (req, res) => {
         playlistDetails = { ...req.body, createdBy: req.user._id };
         console.log(playlistDetails);
         const newPlaylist = await Playlist({ ...playlistDetails }).save();
-        res.status(200).json({ message: `saved ${newPlaylist}` })
+        res.status(200).json({ message: newPlaylist })
     } catch (e) {
         console.log(e);
         res.status(500).json({ message: "internal server error" })
     }
 })
+router.delete("/deleteSong", authJWT, async (req, res) => {
+    try {
+        const songForDelete = await Playlist.updateOne({ _id: req.body.playlistId },
+            { $pull: { songs: req.body.songId } })
+        console.log("song%%", songForDelete);
+        res.send("delete");
+    } catch (e) {
+        console.log(e);
+        res.status(500).json({ message: "internal server error" })
+    }
+})
+
 module.exports = router;
