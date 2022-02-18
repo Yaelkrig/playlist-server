@@ -43,11 +43,15 @@ router.post("/newPlaylist", authJWT, async (req, res) => {
         res.status(500).json({ message: "internal server error" })
     }
 })
-router.put("/deleteSong", async (req, res) => {
+router.put("/deleteSong", authJWT, async (req, res) => {
+    console.log(req.user);
     try {
         const songForDelete = await Playlist.updateOne({ _id: req.body.playlistId },
             { $pull: { songs: req.body.songId } })
-        res.send("delete");
+        const playlist = await Playlist.find({ createdBy: mongoose.Types.ObjectId(req.user._id) }).populate(
+            "songs"
+        );
+        res.send(playlist);
     } catch (e) {
         console.log(e);
         res.status(500).json({ message: "internal server error" })
