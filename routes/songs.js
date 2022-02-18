@@ -16,10 +16,9 @@ router.get("/list", async (req, res) => {
 router.post("/add", authJWT, async (req, res) => {
     try {
         let id;
-        console.log("++++++new song", req.user);
+        console.log("++++++new song", req.body);
         const playlistId = req.body.playlist;
         const existSong = await Song.findOne({ url: req.body.url })
-        console.log();
         if (existSong) {
             id = existSong._id;
         } else {

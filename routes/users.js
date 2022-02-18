@@ -6,9 +6,8 @@ const User = require('../models/User');
 
 // create user
 router.post("/register", async (req, res) => {
-    console.log(req.body);
     try {
-        const checkIfExist = User.findOne({ username: req.body.username })
+        const checkIfExist = await User.findOne({ username: req.body.username });
         if (checkIfExist) return res.status(500).json({ message: "user name already taken" })
         // שמירת הסיסמה מוצפנת
         const hashedPassword = await bcrypt.hash(req.body.password, 10);

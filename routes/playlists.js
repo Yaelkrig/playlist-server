@@ -43,11 +43,10 @@ router.post("/newPlaylist", authJWT, async (req, res) => {
         res.status(500).json({ message: "internal server error" })
     }
 })
-router.delete("/deleteSong", authJWT, async (req, res) => {
+router.put("/deleteSong", async (req, res) => {
     try {
         const songForDelete = await Playlist.updateOne({ _id: req.body.playlistId },
             { $pull: { songs: req.body.songId } })
-        console.log("song%%", songForDelete);
         res.send("delete");
     } catch (e) {
         console.log(e);
