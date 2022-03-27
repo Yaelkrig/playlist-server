@@ -16,7 +16,6 @@ router.get("/uesr", async (req, res) => {
 })
 router.post("/newSong", authJWT, async (req, res) => {
     try {
-        console.log(req.body);
         const id = req.body.idPlaylist;
         const songId = req.body.songId;
         const addToPlaylist = await Playlist.findOne({ createdBy: req.user, _id: id })
@@ -29,9 +28,7 @@ router.post("/newSong", authJWT, async (req, res) => {
 })
 router.post("/newPlaylist", authJWT, async (req, res) => {
     try {
-        console.log('user', req.user);
         playlistDetails = { ...req.body, createdBy: req.user._id };
-        console.log(playlistDetails);
         const newPlaylist = await Playlist({ ...playlistDetails }).save();
         res.status(200).json({ message: newPlaylist })
     } catch (e) {
@@ -40,7 +37,6 @@ router.post("/newPlaylist", authJWT, async (req, res) => {
     }
 })
 router.put("/deleteSong", authJWT, async (req, res) => {
-    console.log(req.user);
     try {
         const songForDelete = await Playlist.updateOne({ _id: req.body.playlistId },
             { $pull: { songs: req.body.songId } })

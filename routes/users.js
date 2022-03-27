@@ -11,7 +11,6 @@ router.post("/register", async (req, res) => {
         if (checkIfExist) return res.status(500).json({ message: "user name already taken" })
         // שמירת הסיסמה מוצפנת
         const hashedPassword = await bcrypt.hash(req.body.password, 10);
-        console.log(hashedPassword);
         const user = new User({
             username: req.body.username,
             password: hashedPassword,
@@ -47,7 +46,6 @@ router.post("/login", async (req, res) => {
 
 router.post("/", async (req, res) => {
     if (req.body === {}) {
-        console.log("out");
         res.json({ message: "gest" })
     }
     const decoded = jwt.verify(req.body.accessToken, process.env.TOKEN_SECRET);
