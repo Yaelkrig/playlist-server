@@ -3,21 +3,17 @@ const authJWT = require('../middlewares/authJWT')
 const Playlist = require('../models/Playlist');
 const mongoose = require('mongoose')
 
-router.get("/uesr", authJWT, async (req, res) => {
+router.get("/uesr", async (req, res) => {
     try {
-        const userId = req.user._id;
-        console.log("^^^^^^^", req.user);
-        const playlist = await Playlist.find({ createdBy: mongoose.Types.ObjectId(userId) }).populate(
+        const playlist = await Playlist.find({}).populate(
             "songs"
         );
-        console.log({ playlist });
         res.status(200).json({ message: playlist });
     } catch (e) {
         console.log(e);
         res.status(500).json({ message: "internal server error" })
     }
 })
-
 router.post("/newSong", authJWT, async (req, res) => {
     try {
         console.log(req.body);
