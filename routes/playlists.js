@@ -1,36 +1,23 @@
 const router = require("./users");
-const authJWT = require('../middlewares/authJWT')
-const Playlist = require('../models/Playlist');
+const authJWT = require('../Middlewares/authJWT');
+const playlistLogic = require('../BL/playlistLogic');
 const mongoose = require('mongoose')
 
-router.get("/uesr", async (req, res) => {
+router.get("/user", async (req, res) => {
     try {
-        const playlist = await Playlist.find({}).populate(
-            "songs"
-        );
+        const playlist = await playlistLogic.getAllPlaylists()
         res.status(200).json({ message: playlist });
     } catch (e) {
         console.log(e);
         res.status(500).json({ message: "internal server error" })
     }
 })
-router.post("/newSong", authJWT, async (req, res) => {
-    try {
-        const id = req.body.idPlaylist;
-        const songId = req.body.songId;
-        const addToPlaylist = await Playlist.findOne({ createdBy: req.user, _id: id })
-        addToPlaylist.songs.push(songId);
-        res.status(200).json({ message: "succied" })
-    } catch (e) {
-        console.log(e);
-        res.status(500).json({ message: "internal server error" });
-    }
-})
+
 router.post("/newPlaylist", authJWT, async (req, res) => {
     try {
         playlistDetails = { ...req.body, createdBy: req.user._id };
-        const newPlaylist = await Playlist({ ...playlistDetails }).save();
-        res.status(200).json({ message: newPlaylist })
+        const returnPlaylists = await playlistLogic.addNewPlaylist(playlistDetails);
+        res.status(200).json({ message: returnPlaylists })
     } catch (e) {
         console.log(e);
         res.status(500).json({ message: "internal server error" })
@@ -38,11 +25,9 @@ router.post("/newPlaylist", authJWT, async (req, res) => {
 })
 router.put("/deleteSong", authJWT, async (req, res) => {
     try {
-        const songForDelete = await Playlist.updateOne({ _id: req.body.playlistId },
-            { $pull: { songs: req.body.songId } })
-        const playlist = await Playlist.find({ createdBy: mongoose.Types.ObjectId(req.user._id) }).populate(
-            "songs"
-        );
+        const userIdFilter = { createdBy: mongoose.Types.ObjectId(req.user._id) };
+        const playlist = await playlistLogic.deleteSongFromPlaylist(req.body.playlistId, userIdFilter)
+
         res.send(playlist);
     } catch (e) {
         console.log(e);

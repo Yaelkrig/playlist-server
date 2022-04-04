@@ -3,7 +3,7 @@ require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
-const { connectDB } = require('./models');
+require('./DL/dbConnect').connect();
 const { songsRoute, usersRoute, playlistRoute } = require('./routes/router');
 
 // Uses
@@ -19,9 +19,7 @@ app.use("/playlists", playlistRoute)
 // import port from .env
 const port = process.env.PORT || 5000;
 
-connectDB().then(() => {
-    console.log(`connect to data base successfully`);
-});
+
 
 // listen
 app.listen(port, () => {
